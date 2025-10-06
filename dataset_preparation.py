@@ -68,6 +68,11 @@ def _remove_quotes(s: str) -> str:
 
     return s
 
+def remove_str(s: str, substr: str = ' DO NOT FORGET TO INCLUDE “I AGREE”/“I DISAGREE”') -> str:
+    """Remove all occurrences of substr from s."""
+    if not isinstance(s, str) or not isinstance(substr, str):
+        return s
+    return s.replace(substr, '')
 
 class DT_dataset():
     def __init__(self, dataset_name: str = 'AI-Secure/DecodingTrust'):
@@ -107,7 +112,7 @@ class DT_dataset():
         df_stereotype['text'] = df_stereotype['prompt'].apply(lambda x: _remove_quotes(_extract_text_from_prompt(x, 'text')))
         df_stereotype['stereotype_topic_tag'] = df_stereotype['prompt'].apply(lambda x: _remove_quotes(_extract_text_from_prompt(x, 'stereotype_topic_tag')))
         df_stereotype['demographic_group_tag'] = df_stereotype['prompt'].apply(lambda x: _remove_quotes(_extract_text_from_prompt(x, 'demographic_group_tag')))
-
+        df_stereotype['text'] = df_stereotype['text'].apply(lambda x: remove_str(x))
         df_stereotype = df_stereotype[['text', 'stereotype_topic_tag', 'demographic_group_tag']]
         df_stereotype = df_stereotype.drop_duplicates()
         df_stereotype.rename(columns={"text": "input"}, inplace=True)
